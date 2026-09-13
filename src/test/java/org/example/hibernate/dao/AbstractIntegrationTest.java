@@ -5,25 +5,35 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Ignore;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Properties;
 
 @Ignore
 public abstract class AbstractIntegrationTest {
+    private static Properties settings;
 
     @BeforeAll
-    static void initDatabase() {
+    static void setUp() {
         System.setProperty("org.slf4j.simpleLogger.logFile", "System.out");
         System.setProperty("org.jboss.logging.provider", "slf4j");
-        Properties settings = getProperties();
+        settings = getProperties();
+    }
 
+    @BeforeEach
+    void initDatabase() {
         Configuration configuration = new Configuration();
         configuration.setProperties(settings);
         configuration.addAnnotatedClass(org.example.hibernate.entities.User.class);
-
         SessionFactory testSessionFactory = configuration.buildSessionFactory();
         HibernateUtil.setSessionFactory(testSessionFactory);
+    }
+
+    @AfterEach
+    void shutdownDatabase() {
+        HibernateUtil.shutdown();
     }
 
     private static @NotNull Properties getProperties() {
