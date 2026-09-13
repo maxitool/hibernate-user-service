@@ -24,7 +24,9 @@ class ValidatorUtilTest {
         @Test
         void when_userWithAllFieldsValid_then_returnTrue() {
             User user = new User("Михаил Чебукинский", "misha@chebur.com", 25);
+
             boolean result = ValidatorUtil.validate(user);
+
             assertTrue(result);
         }
 
@@ -36,7 +38,9 @@ class ValidatorUtilTest {
         })
         void when_emailIsValid_then_returnTrue(String email) {
             User user = new User("Katya", email, 45);
+
             boolean result = ValidatorUtil.validate(user);
+
             assertTrue(result);
         }
 
@@ -44,7 +48,9 @@ class ValidatorUtilTest {
         @ValueSource(ints = {1, 18, 100, Integer.MAX_VALUE})
         void when_ageIsPositive_then_returnTrue(int age) {
             User user = new User("Masha", "masha@masha.com", age);
+
             boolean result = ValidatorUtil.validate(user);
+
             assertTrue(result);
         }
     }
@@ -65,6 +71,7 @@ class ValidatorUtilTest {
         })
         void when_emailFormatIsIncorrect_then_returnFalse(String email) {
             User user = new User("Katya", email, 25);
+
             assertFalse(ValidatorUtil.validate(user));
         }
 
@@ -72,35 +79,45 @@ class ValidatorUtilTest {
         @ValueSource(ints = {0, -1, -100, Integer.MIN_VALUE})
         void when_ageIsNotPositive_then_returnFalse(int age) {
             User user = new User("Katya", "katya@example.com", age);
+
             boolean result = ValidatorUtil.validate(user);
+
             assertFalse(result);
         }
 
         @Test
         void when_multipleViolationsExist_then_returnFalse() {
             User user = new User("Katya", "bad-email", -5);
+
             boolean result = ValidatorUtil.validate(user);
+
             assertFalse(result);
         }
 
         @Test
         void when_ageIsNull_then_returnFalse() {
             User user = new User("Test", "test@example.com", null);
+
             boolean result = ValidatorUtil.validate(user);
+
             assertFalse(result);
         }
 
         @Test
         void when_emailIsNull_then_returnFalse() {
             User user = new User("Test", null, 25);
+
             boolean result = ValidatorUtil.validate(user);
+
             assertFalse(result);
         }
 
         @Test
         void when_emailIsEmpty_then_returnFalse() {
             User user = new User("Test", "", 25);
+
             boolean result = ValidatorUtil.validate(user);
+
             assertFalse(result);
         }
 
@@ -109,14 +126,18 @@ class ValidatorUtilTest {
             User user = new User("Test"
                     , "qwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiop@m.com"
                     , 25);
+
             boolean result = ValidatorUtil.validate(user);
+
             assertFalse(result);
         }
 
         @Test
         void when_nameIsNull_then_returnFalse() {
             User user = new User(null, "test@example.com", 25);
+
             boolean result = ValidatorUtil.validate(user);
+
             assertFalse(result);
         }
 
@@ -125,12 +146,14 @@ class ValidatorUtilTest {
             User user = new User(
                     "qwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopf"
                     , "test@example.com", 25);
+
             boolean result = ValidatorUtil.validate(user);
+
             assertFalse(result);
         }
 
         @Test
-        void when_objectIsNull_then_throwIllegalArgumentException() {
+        void when_objectIsNull_then_returnFalse() {
             assertFalse(ValidatorUtil.validate(null));
         }
     }

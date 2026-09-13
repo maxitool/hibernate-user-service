@@ -153,20 +153,18 @@ public class UserDaoImplementTest extends AbstractIntegrationTest {
 
     @Test
     void when_update_then_returnTrue() {
-        User userUpdate = userDao.findByEmail(userIrina1.getEmail());
-        assertNotNull(userUpdate);
+        userIrina1.setName("Lara");
 
-        userUpdate.setName("Lara");
-        boolean answer = userDao.update(userUpdate);
+        boolean answer = userDao.update(userIrina1);
 
         assertTrue(answer);
         User userResultUpdate = userDao.findByEmail(userIrina1.getEmail());
         assertNotNull(userResultUpdate);
-        assertEquals(userUpdate.getId(), userResultUpdate.getId());
-        assertEquals(userUpdate.getEmail(), userResultUpdate.getEmail());
-        assertEquals("Lara", userUpdate.getName());
-        assertEquals(userUpdate.getAge(), userResultUpdate.getAge());
-        assertEquals(userUpdate.getCreatedAt(), userResultUpdate.getCreatedAt());
+        assertEquals(userIrina1.getId(), userResultUpdate.getId());
+        assertEquals(userIrina1.getEmail(), userResultUpdate.getEmail());
+        assertEquals("Lara", userIrina1.getName());
+        assertEquals(userIrina1.getAge(), userResultUpdate.getAge());
+        assertEquals(userIrina1.getCreatedAt(), userResultUpdate.getCreatedAt());
     }
 
     @Test
@@ -188,14 +186,10 @@ public class UserDaoImplementTest extends AbstractIntegrationTest {
 
     @Test
     void when_deleteEntity_then_returnTrue() {
-        User deleteUser = new User("IrinaForDelete", "delete@test.com", 25);
-        deleteUser = userDao.save(deleteUser);
-        assertNotNull(deleteUser);
-
-        boolean isDeleted = userDao.delete(deleteUser);
+        boolean isDeleted = userDao.delete(userIrina1);
 
         assertTrue(isDeleted);
-        User afterDelete = userDao.findById(deleteUser.getId());
+        User afterDelete = userDao.findById(userIrina1.getId());
         assertNull(afterDelete);
     }
 
@@ -208,13 +202,10 @@ public class UserDaoImplementTest extends AbstractIntegrationTest {
 
     @Test
     void when_deleteByExistentId_then_returnTrue() {
-        User deleteUser = new User("IrinaForDelete", "delete@test.com", 25);
-        userDao.save(deleteUser);
-
-        boolean isDeleted = userDao.deleteById(deleteUser.getId());
+        boolean isDeleted = userDao.deleteById(userIrina1.getId());
 
         assertTrue(isDeleted);
-        User afterDelete = userDao.findById(deleteUser.getId());
+        User afterDelete = userDao.findById(userIrina1.getId());
         assertNull(afterDelete);
     }
 

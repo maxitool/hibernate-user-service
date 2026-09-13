@@ -28,10 +28,12 @@ public class BooleanConsoleReader extends StringConsoleReader {
         if (data.equals("false")) {
             return booleanResponse;
         }
+        String message = "Can't convert the wrote data to boolean, data: " + booleanResponse.stringData;
         if (doConsoleLogAfterParse) {
-            System.out.println("Can't convert the wrote data to boolean, data: " + booleanResponse.stringData);
+            System.out.println(message);
         }
         booleanResponse.state = StringResponse.States.CANT_CONVERT;
+        booleanResponse.errorMessage = message;
         return booleanResponse;
     }
 
@@ -41,12 +43,21 @@ public class BooleanConsoleReader extends StringConsoleReader {
 
     public static synchronized BooleanResponse getBooleanData(String trueValue, String falseValue) {
         if (trueValue == null || falseValue == null) {
-            System.out.println("trueValue = null or falseValue = null in BooleanConsoleReader.getBooleanData.");
-            return new BooleanResponse(new StringResponse());
+            String message = "trueValue = null or falseValue = null in BooleanConsoleReader.getBooleanData.";
+            System.out.println(message);
+            BooleanResponse response = new BooleanResponse(new StringResponse());
+            response.errorMessage = message;
+            return response;
         }
         BooleanResponse booleanResponse = getBooleanData(false);
-        if ((booleanResponse.state != StringResponse.States.OK && booleanResponse.state != StringResponse.States.CANT_CONVERT)
-                || booleanResponse.stringData.isEmpty()) {
+        if (booleanResponse.state != StringResponse.States.OK
+                && booleanResponse.state != StringResponse.States.CANT_CONVERT) {
+            return booleanResponse;
+        }
+        if (booleanResponse.stringData.isEmpty()) {
+            String message = "wrote data is empty.";
+            System.out.println(message);
+            booleanResponse.errorMessage = message;
             return booleanResponse;
         }
         trueValue = trueValue.trim();
@@ -66,8 +77,10 @@ public class BooleanConsoleReader extends StringConsoleReader {
             booleanResponse.state = StringResponse.States.OK;
             return booleanResponse;
         }
+        String message = "Can't convert the wrote data to boolean, data: " + booleanResponse.stringData;
+        System.out.println(message);
+        booleanResponse.errorMessage = message;
         booleanResponse.state = StringResponse.States.CANT_CONVERT;
-        System.out.println("Can't convert the wrote data to boolean, data: " + booleanResponse.stringData);
         return booleanResponse;
     }
 }
