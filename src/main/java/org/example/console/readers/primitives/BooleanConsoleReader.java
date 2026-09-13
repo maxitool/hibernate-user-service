@@ -50,14 +50,9 @@ public class BooleanConsoleReader extends StringConsoleReader {
             return response;
         }
         BooleanResponse booleanResponse = getBooleanData(false);
-        if (booleanResponse.state != StringResponse.States.OK
-                && booleanResponse.state != StringResponse.States.CANT_CONVERT) {
-            return booleanResponse;
-        }
-        if (booleanResponse.stringData.isEmpty()) {
-            String message = "wrote data is empty.";
-            System.out.println(message);
-            booleanResponse.errorMessage = message;
+        if ((booleanResponse.state != StringResponse.States.OK
+                && booleanResponse.state != StringResponse.States.CANT_CONVERT)
+                || booleanResponse.stringData.isEmpty()) {
             return booleanResponse;
         }
         trueValue = trueValue.trim();

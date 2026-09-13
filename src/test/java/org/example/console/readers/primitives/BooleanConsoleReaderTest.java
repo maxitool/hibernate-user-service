@@ -161,12 +161,32 @@ public class BooleanConsoleReaderTest extends AbstractConsoleReaderTest {
     }
 
     @Test
-    public void when_getEmptyLine_then_returnResponseWithBadResponseState() {
+    public void when_getEmpty_then_returnResponseWithBadResponseState() {
         provideInput("");
 
         BooleanResponse response = BooleanConsoleReader.getBooleanData();
 
         assertEquals(StringResponse.States.BAD_RESPONSE, response.state);
+        assertFalse(response.errorMessage.isEmpty());
+    }
+
+    @Test
+    public void when_getEmptyLine_then_returnResponseWithCantConvertState() {
+        provideInput("\n");
+
+        BooleanResponse response = BooleanConsoleReader.getBooleanData();
+
+        assertEquals(StringResponse.States.CANT_CONVERT, response.state);
+        assertFalse(response.errorMessage.isEmpty());
+    }
+
+    @Test
+    public void when_getEmptyLineWithNoYesMethodArgs_then_returnResponseWithCantConvertState() {
+        provideInput("\n");
+
+        BooleanResponse response = BooleanConsoleReader.getBooleanData("yes", "no");
+
+        assertEquals(StringResponse.States.CANT_CONVERT, response.state);
         assertFalse(response.errorMessage.isEmpty());
     }
 

@@ -90,7 +90,7 @@ public class UserDaoImplementTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void when_findByEmail_then_returnFoundUser() {
+    void when_findByExistentEmail_then_returnFoundUser() {
         User found = userDao.findByEmail(userIrina2.getEmail());
 
         assertNotNull(found);
@@ -101,14 +101,21 @@ public class UserDaoImplementTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void when_findByEmail_then_userNotFound() {
+    void when_findByNonExistentEmail_then_returnNull() {
         User result = userDao.findByEmail("2@2.com");
 
         assertNull(result);
     }
 
     @Test
-    void when_findByName_then_returnListUser() {
+    void when_findByNullEmail_then_returnNull() {
+        User result = userDao.findByEmail(null);
+
+        assertNull(result);
+    }
+
+    @Test
+    void when_findByExistentName_then_returnUsersList() {
         List<User> result = userDao.findByName(userIrina1.getName());
 
         assertNotNull(result);
@@ -118,7 +125,7 @@ public class UserDaoImplementTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void when_findByName_then_returnListUserEmpty() {
+    void when_findByNonExistentName_then_returnUsersListEmpty() {
         List<User> result = userDao.findByName("Lara");
 
         assertNotNull(result);
@@ -126,7 +133,15 @@ public class UserDaoImplementTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void when_findByAge_then_returnListUser() {
+    void when_findByNullName_then_returnUsersListEmpty() {
+        List<User> result = userDao.findByName(null);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void when_findByExistentAge_then_returnUsersList() {
         List<User> result = userDao.findByAge(userIrina1.getAge());
 
         assertNotNull(result);
@@ -135,7 +150,7 @@ public class UserDaoImplementTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void when_findByAge_then_returnListEmpty() {
+    void when_findByNonExistentAge_then_returnUsersListEmpty() {
         List<User> result = userDao.findByAge(33);
 
         assertNotNull(result);
@@ -143,7 +158,15 @@ public class UserDaoImplementTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void when_findAll_then_returnListUser() {
+    void when_findByNullAge_then_returnUsersListEmpty() {
+        List<User> result = userDao.findByAge(null);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void when_findAll_then_returnUsersList() {
         List<User> result = userDao.findAll();
 
         assertNotNull(result);
@@ -153,7 +176,8 @@ public class UserDaoImplementTest extends AbstractIntegrationTest {
 
     @Test
     void when_update_then_returnTrue() {
-        userIrina1.setName("Lara");
+        String name = "Lara";
+        userIrina1.setName(name);
 
         boolean answer = userDao.update(userIrina1);
 
@@ -162,7 +186,7 @@ public class UserDaoImplementTest extends AbstractIntegrationTest {
         assertNotNull(userResultUpdate);
         assertEquals(userIrina1.getId(), userResultUpdate.getId());
         assertEquals(userIrina1.getEmail(), userResultUpdate.getEmail());
-        assertEquals("Lara", userIrina1.getName());
+        assertEquals(name, userIrina1.getName());
         assertEquals(userIrina1.getAge(), userResultUpdate.getAge());
         assertEquals(userIrina1.getCreatedAt(), userResultUpdate.getCreatedAt());
     }
@@ -212,6 +236,13 @@ public class UserDaoImplementTest extends AbstractIntegrationTest {
     @Test
     void when_deleteByNonExistentId_then_returnFalse() {
         boolean isDeleted = userDao.deleteById(99999L);
+
+        assertFalse(isDeleted);
+    }
+
+    @Test
+    void when_deleteByNullId_then_returnFalse() {
+        boolean isDeleted = userDao.deleteById(null);
 
         assertFalse(isDeleted);
     }
