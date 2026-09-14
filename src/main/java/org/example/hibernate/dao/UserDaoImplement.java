@@ -1,21 +1,21 @@
 package org.example.hibernate.dao;
 
-import org.example.hibernate.config.HibernateUtil;
 import org.example.hibernate.entities.User;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
 import java.util.List;
 
 public class UserDaoImplement extends AbstractDaoImplement<User, Long> implements UserDao {
 
-    public UserDaoImplement() {
-        super(User.class);
+    public UserDaoImplement(SessionFactory sessionFactory) {
+        super(User.class, sessionFactory);
     }
 
     @Override
     public final User findByEmail(String email) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("FROM User user WHERE user.email = ?1", entityClass);
             query.setParameter(1, email);
             List<User> list = query.list();
@@ -31,7 +31,7 @@ public class UserDaoImplement extends AbstractDaoImplement<User, Long> implement
 
     @Override
     public final List<User> findByName(String name) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("FROM User user WHERE user.name = ?1", entityClass);
             query.setParameter(1, name);
             return query.list();
@@ -43,7 +43,7 @@ public class UserDaoImplement extends AbstractDaoImplement<User, Long> implement
 
     @Override
     public final List<User> findByAge(Integer age) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("FROM User user WHERE user.age = ?1", entityClass);
             query.setParameter(1, age);
             return query.list();

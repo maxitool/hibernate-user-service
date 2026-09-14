@@ -10,6 +10,7 @@ import org.example.console.readers.primitives.responses.DoubleResponse;
 import org.example.console.readers.primitives.responses.IntResponse;
 import org.example.console.readers.primitives.responses.LongResponse;
 import org.example.console.readers.primitives.responses.StringResponse;
+import org.example.hibernate.config.HibernateUtil;
 import org.example.hibernate.dao.UserDaoImplement;
 import org.example.hibernate.entities.User;
 import org.example.hibernate.services.UserService;
@@ -105,7 +106,8 @@ public class Gui {
 
 
     public Gui() {
-        userService = new UserService(new UserDaoImplement());
+        userService = new UserService(
+                new UserDaoImplement(HibernateUtil.getSessionFactory()));
     }
 
     public void run() {

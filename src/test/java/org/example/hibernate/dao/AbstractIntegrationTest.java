@@ -8,6 +8,7 @@ import org.junit.Ignore;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
 
 import java.util.Properties;
 
@@ -23,7 +24,10 @@ public abstract class AbstractIntegrationTest {
     }
 
     @BeforeEach
-    void initDatabase() {
+    void initDatabase(TestInfo testInfo) {
+        if (testInfo.getTags().contains("SkipInitDatabase")) {
+            return;
+        }
         Configuration configuration = new Configuration();
         configuration.setProperties(settings);
         configuration.addAnnotatedClass(org.example.hibernate.entities.User.class);
