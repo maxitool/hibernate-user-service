@@ -1,8 +1,8 @@
 package org.example.hibernate.dao;
 
-import org.example.hibernate.config.HibernateUtil;
 import org.example.hibernate.validator.ValidatorUtil;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
@@ -14,12 +14,21 @@ import java.util.function.Consumer;
 abstract public class AbstractDaoImplement<T, ID> implements Dao<T, ID> {
     protected static final Logger logger = LoggerFactory.getLogger(AbstractDaoImplement.class);
     protected final Class<T> entityClass;
+    protected final SessionFactory sessionFactory;
 
-    protected AbstractDaoImplement(Class<T> entityClass) {
+    protected AbstractDaoImplement(Class<T> entityClass, SessionFactory sessionFactory) {
         if (entityClass == null) {
-            logger.error("Error: entityClass passed in constructor is null");
+            String message = "Error: entityClass passed in constructor of AbstractDaoImplement is null";
+            logger.error(message);
+            throw new ExceptionInInitializerError(message);
         }
         this.entityClass = entityClass;
+        if (sessionFactory == null) {
+            String message = "Error: sessionFactory passed in constructor of AbstractDaoImplement is null";
+            logger.error(message);
+            throw new ExceptionInInitializerError(message);
+        }
+        this.sessionFactory = sessionFactory;
     }
 
     @Override
@@ -47,7 +56,7 @@ abstract public class AbstractDaoImplement<T, ID> implements Dao<T, ID> {
             logger.error("id argument in findById method is null");
             return null;
         }
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             return session.find(entityClass, id);
         } catch (Exception e) {
             logger.error("Error finding user by id {}: {}", id, e.getMessage());
@@ -57,7 +66,7 @@ abstract public class AbstractDaoImplement<T, ID> implements Dao<T, ID> {
 
     @Override
     public final List<T> findAll() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Query<T> query = session.createQuery("FROM User", entityClass);
             return query.list();
         } catch (Exception e) {
@@ -88,7 +97,7 @@ abstract public class AbstractDaoImplement<T, ID> implements Dao<T, ID> {
     protected final boolean executeInTransaction(Consumer<Session> action) {
         logger.info("Transaction: {}", action);
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             action.accept(session);
             transaction.commit();

@@ -29,7 +29,7 @@ public class UserServiceTest {
 
     @BeforeAll
     static void setUp() {
-        userDao = mock(UserDao.class);
+        userDao = mock();
         userService = new UserService(userDao);
         user = new User("Liza", "1@4.com", 13);
         users = List.of(user);
